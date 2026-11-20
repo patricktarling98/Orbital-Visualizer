@@ -1,0 +1,10 @@
+TODO:
+Fix scaling?
+Standardize wavefunction for as many atoms as possible -> works maybe
+
+Fix grid so that you cant see the cube?
+Change grid scaling?
+Change r scaling to work for any%?
+
+NOTES:
+Hydrogenic vs non hydrogenic?

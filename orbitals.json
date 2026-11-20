@@ -1,0 +1,94 @@
+{
+  "Hydrogen": {
+    "Z": 1,
+    "orbitals": [
+      {"n": 1, "l": 0, "m": 0, "occupancy": 1}
+    ]
+  },
+
+  "Helium": {
+    "Z": 2,
+    "orbitals": [
+      {"n": 1, "l": 0, "m": 0, "occupancy": 2}
+    ]
+  },
+
+  "Lithium": {
+    "Z": 3,
+    "orbitals": [
+      {"n": 1, "l": 0, "m": 0, "occupancy": 2},
+      {"n": 2, "l": 0, "m": 0, "occupancy": 1}
+    ]
+  },
+
+  "Beryllium": {
+    "Z": 4,
+    "orbitals": [
+      {"n": 1, "l": 0, "m": 0, "occupancy": 2},
+      {"n": 2, "l": 0, "m": 0, "occupancy": 2}
+    ]
+  },
+
+  "Boron": {
+    "Z": 5,
+    "orbitals": [
+      {"n": 1, "l": 0, "m": 0, "occupancy": 2},
+      {"n": 2, "l": 0, "m": 0, "occupancy": 2},
+      {"n": 2, "l": 1, "m": -1, "occupancy": 1}
+    ]
+  },
+
+  "Carbon": {
+    "Z": 6,
+    "orbitals": [
+      {"n": 1, "l": 0, "m": 0, "occupancy": 2},
+      {"n": 2, "l": 0, "m": 0, "occupancy": 2},
+      {"n": 2, "l": 1, "m": -1, "occupancy": 1},
+      {"n": 2, "l": 1, "m": 0,  "occupancy": 1}
+    ]
+  },
+
+  "Nitrogen": {
+    "Z": 7,
+    "orbitals": [
+      {"n": 1, "l": 0, "m": 0, "occupancy": 2},
+      {"n": 2, "l": 0, "m": 0, "occupancy": 2},
+      {"n": 2, "l": 1, "m": -1, "occupancy": 1},
+      {"n": 2, "l": 1, "m": 0,  "occupancy": 1},
+      {"n": 2, "l": 1, "m": 1,  "occupancy": 1}
+    ]
+  },
+
+  "Oxygen": {
+    "Z": 8,
+    "orbitals": [
+      {"n": 1, "l": 0, "m": 0, "occupancy": 2},
+      {"n": 2, "l": 0, "m": 0, "occupancy": 2},
+      {"n": 2, "l": 1, "m": -1, "occupancy": 2},
+      {"n": 2, "l": 1, "m": 0,  "occupancy": 1},
+      {"n": 2, "l": 1, "m": 1,  "occupancy": 1}
+    ]
+  },
+
+  "Fluorine": {
+    "Z": 9,
+    "orbitals": [
+      {"n": 1, "l": 0, "m": 0, "occupancy": 2},
+      {"n": 2, "l": 0, "m": 0, "occupancy": 2},
+      {"n": 2, "l": 1, "m": -1, "occupancy": 2},
+      {"n": 2, "l": 1, "m": 0,  "occupancy": 2},
+      {"n": 2, "l": 1, "m": 1,  "occupancy": 1}
+    ]
+  },
+
+  "Neon": {
+    "Z": 10,
+    "orbitals": [
+      {"n": 1, "l": 0, "m": 0, "occupancy": 2},
+      {"n": 2, "l": 0, "m": 0, "occupancy": 2},
+      {"n": 2, "l": 1, "m": -1, "occupancy": 2},
+      {"n": 2, "l": 1, "m": 0,  "occupancy": 2},
+      {"n": 2, "l": 1, "m": 1,  "occupancy": 2}
+    ]
+  }
+}
