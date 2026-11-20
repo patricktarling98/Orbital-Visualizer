@@ -1,12 +1,11 @@
 import numpy as np
 import physics
 import json
-import main
 from scipy.special import genlaguerre, sph_harm_y, factorial
 
-gridLen = main.gridLen
-rangeLim = main.rangeLim
-percent_of_points = main.percent_of_points
+gridLen = 100
+rangeLim = 10
+percent_of_points = 0.9
 
 
 """Atom class: Has a name, atomic number and a list of all orbital objects which contain orbital data"""
