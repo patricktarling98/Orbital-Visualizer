@@ -3,7 +3,7 @@ import pyvista as pv
 import physics
 from scipy.spatial import cKDTree
 import time
-import atoms
+import orbitals
 
 WIDTH = 600
 HEIGHT = 600
@@ -17,18 +17,18 @@ pv.global_theme.show_scalar_bar = False
 
 
 """Render image"""
-def render(atom, numPoints = 100):
+def render(orbital, numPoints = 100):
     start_time = time.time()
     plotter = pv.Plotter()
 
-    electrons = atom.generate_electron_cloud(num_points=numPoints) #REAL WORK
+    electrons = orbital.generate_electron_cloud(num_points=numPoints) #REAL WORK
 
     electronsPV = pv.PolyData(electrons)
     color = compute_density(electrons) #Compute density for coloring
     color_scaled = np.log(color + 1e-9)
     color_scaled = (color_scaled - color_scaled.min()) / (color_scaled.max() - color_scaled.min())
     plotter.add_mesh(electronsPV, scalars=color_scaled, point_size=5, render_points_as_spheres=True, opacity=0.5, cmap='magma')
-    nucleous = pv.Sphere(radius=atoms.rangeLim/20, center = (0,0,0))
+    nucleous = pv.Sphere(radius=orbitals.rangeLim/20, center = (0,0,0))
     plotter.add_mesh(nucleous, color='blue', opacity=0.9)
 
     #Add density coloring

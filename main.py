@@ -1,5 +1,5 @@
 import visualizer
-import atoms
+import orbitals
 "-----------------------------------------------PARAMS-------------------------------------------------------------------------------"
 numPoints = 10000
 atom_to_show = "Hydrogen"
@@ -7,6 +7,6 @@ atom_to_show = "Hydrogen"
 
 if __name__ == "__main__":
     print("Starting")
-    atom = atoms.Atom(atom_to_show)
+    orbital = orbitals.Orbital(n=1, l=0, m=0, Z=1)
 
-    visualizer.render(numPoints=numPoints, atom=atom) #REAL WORK
+    visualizer.render(orbital=orbital, numPoints=numPoints) #REAL WORK
