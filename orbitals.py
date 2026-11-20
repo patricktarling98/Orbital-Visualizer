@@ -45,52 +45,59 @@ class Orbital:
     
 
     "-------------------------------------------------BREAD N BUTTER---------------------------------------------------------------"
-    def generate_electron_cloud(self, num_points=100): #TODO Understand
+    def generate_electron_cloud(self, num_points=100):
         #MAKE GRID N ASSIGN EACH POINT R,THETA,PHI VALUES
         xv, yv, zv = np.linspace(-rangeLim, rangeLim, gridLen), np.linspace(-rangeLim, rangeLim, gridLen), np.linspace(-rangeLim, rangeLim, gridLen)
         x, y, z = np.meshgrid(xv, yv, zv, indexing='ij')
 
         r = np.sqrt(x**2 + y**2 + z**2)
 
-        #Scale r now?
+        #TODO scale r
         scale_factor = self.find_scale_factor(r)
         r_scaled = r * scale_factor
 
-        #Vibe coded tbh
+        #just prevents division by zero
         theta = np.zeros_like(r)
         nonzero_mask = r > 0
         cos_theta = z[nonzero_mask] / r[nonzero_mask]
         cos_theta = np.clip(cos_theta, -1.0, 1.0)
-        theta[nonzero_mask] = np.arccos(cos_theta)        
+        theta[nonzero_mask] = np.arccos(cos_theta)  
+
         phi = np.arctan2(y, x)
 
-        total_pdf = np.zeros_like(r)
-
-        
         orbital_pdf = self.probability_density(self, r, theta, phi) 
-        total_pdf += orbital_pdf
-        total_pdf /= total_pdf.sum()
+        orbital_pdf /= orbital_pdf.sum()  # Normalize the PDF
 
-        #RETURNS TO DISPLAY AFTER DOING WEIGHTED SAMPLING
-        return self.sample_points_from_pdf(total_pdf, x, y, z, num_points)
-    
-    """Finds the scale factor such that r*scale results in the largest r being the r containing 90% of points"""
-    def find_scale_factor(self, r): #eventually change this so that it takes x%
-        #TODO make this correct
-        Z = self.Z
-        return 4*(self.n**2)/(Z*r.max())
+        return self.sample_points_from_pdf(orbital_pdf, x, y, z, num_points)
     
     """Samples points from a given pdf, returns an array of points"""
     def sample_points_from_pdf(self, pdf, x, y, z, numPoints):
+        #Flatten arrays
         pdfFlat = pdf.ravel()
         xFlat = x.ravel()
         yFlat = y.ravel()
         zFlat = z.ravel()
 
         rng = np.random.default_rng(seed=0)
-        indexs = rng.choice(len(pdfFlat), size=numPoints, p=pdfFlat)
+        indexs = rng.choice(len(pdfFlat), size=numPoints, p=pdfFlat) #Select indices based on the pdf probabilities
         points = np.column_stack((xFlat[indexs], yFlat[indexs], zFlat[indexs]))
 
         return points
+    
+    """Finds the scale factor such that r*scale results in the largest r being the r containing 90% of points"""
+    def find_scale_factor(self, r): #eventually change this so that it takes x%
+        #TODO make this correct
+        Z = self.Z
+        return 4*(self.n**2)/(Z*r.max())
 
+    def find_cutoff_radius(self, r, percentage=percent_of_points):
+        # Flatten the array and sort it
+        r_flat = r.ravel()
+        r_sorted = np.sort(r_flat)
+
+        # Find the index corresponding to the desired percentage
+        index = int(len(r_sorted) * percentage)
+
+        # Return the cutoff radius
+        return r_sorted[index]
     

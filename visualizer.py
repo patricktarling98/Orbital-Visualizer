@@ -8,7 +8,6 @@ HEIGHT = 600
 percent_of_points = 0.9
 gridLen = 100
 rangeLim = 10
-numPoints = 10000
 
 #General plot settings
 pv.set_plot_theme('dark')
@@ -23,7 +22,7 @@ def render(orbital, numPoints = 100):
     start_time = time.time()
     plotter = pv.Plotter()
 
-    electrons = orbital.generate_electron_cloud(num_points=numPoints) #REAL WORK
+    electrons = orbital.generate_electron_cloud(num_points=numPoints) #Gets point loactions
 
     electronsPV = pv.PolyData(electrons)
     color = compute_density(electrons) #Compute density for coloring
