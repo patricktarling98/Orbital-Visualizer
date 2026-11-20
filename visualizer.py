@@ -1,12 +1,14 @@
 import numpy as np
 import pyvista as pv
-import physics
 from scipy.spatial import cKDTree
 import time
-import orbitals
 
 WIDTH = 600
 HEIGHT = 600
+percent_of_points = 0.9
+gridLen = 100
+rangeLim = 10
+numPoints = 10000
 
 #General plot settings
 pv.set_plot_theme('dark')
@@ -28,12 +30,12 @@ def render(orbital, numPoints = 100):
     color_scaled = np.log(color + 1e-9)
     color_scaled = (color_scaled - color_scaled.min()) / (color_scaled.max() - color_scaled.min())
     plotter.add_mesh(electronsPV, scalars=color_scaled, point_size=5, render_points_as_spheres=True, opacity=0.5, cmap='magma')
-    nucleous = pv.Sphere(radius=orbitals.rangeLim/20, center = (0,0,0))
+    nucleous = pv.Sphere(radius=rangeLim/20, center = (0,0,0))
     plotter.add_mesh(nucleous, color='blue', opacity=0.9)
 
     #Add density coloring
     end_time = time.time()
-    print(f"Generated {numPoints} points with gridsize {physics.gridLen} and computed density in {end_time - start_time:.2f} seconds.")
+    print(f"Generated {numPoints} points with gridsize {gridLen} and computed density in {end_time - start_time:.2f} seconds.")
     plotter.show()
 
 """Deals with assigning points scalar color values"""

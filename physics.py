@@ -13,7 +13,7 @@ def generate_electron_cloud(numPoints = 100, gridSize = (gridLen, gridLen, gridL
     x, y, z = np.meshgrid(xv, yv, zv, indexing='ij')
 
     pdf = calculate_probability_distribution(x, y, z, numPoints=numPoints)#Get pdf, assigne each point a probability value
-    points = sample_points_from_pdf(pdf, x, y, z, numPoints=numPoints)#Sample points from the pdf to create the electron cloud
+    points = self.sample_points_from_pdf(pdf, x, y, z, numPoints=numPoints)#Sample points from the pdf to create the electron cloud
 
     return points
 
@@ -38,18 +38,7 @@ def calculate_probability_distribution(x, y, z,numPoints = 100):
     pdf/= pdf.sum()
     return pdf
 
-"""Samples points from a given pdf, returns an array of points"""
-def sample_points_from_pdf(pdf, x, y, z, numPoints):
-    pdfFlat = pdf.ravel()
-    xFlat = x.ravel()
-    yFlat = y.ravel()
-    zFlat = z.ravel()
 
-    rng = np.random.default_rng(seed=0)
-    indexs = rng.choice(len(pdfFlat), size=numPoints, p=pdfFlat)
-    points = np.column_stack((xFlat[indexs], yFlat[indexs], zFlat[indexs]))
-
-    return points
 
 def find_scale_factor(points):
     pass
