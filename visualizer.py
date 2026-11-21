@@ -5,9 +5,11 @@ import time
 
 WIDTH = 600
 HEIGHT = 600
-percent_of_points = 0.9
+percent_of_points = 0.8
 gridLen = 100
-rangeLim = 10
+percentile_to_cutoff = 0.05  # Threshold for density coloring
+numPoints = 50000
+opacity = 0.7
 
 #General plot settings
 pv.set_plot_theme('dark')
@@ -18,18 +20,25 @@ pv.global_theme.show_scalar_bar = False
 
 
 """Render image"""
-def render(orbital, numPoints = 100):
+def render(orbital):
     start_time = time.time()
     plotter = pv.Plotter()
 
     electrons = orbital.generate_electron_cloud(num_points=numPoints) #Gets point loactions
 
-    electronsPV = pv.PolyData(electrons)
     color = compute_density(electrons) #Compute density for coloring
     color_scaled = np.log(color + 1e-9)
     color_scaled = (color_scaled - color_scaled.min()) / (color_scaled.max() - color_scaled.min())
-    plotter.add_mesh(electronsPV, scalars=color_scaled, point_size=5, render_points_as_spheres=True, opacity=0.5, cmap='magma')
-    nucleous = pv.Sphere(radius=rangeLim/20, center = (0,0,0))
+
+    percentile_value = np.percentile(color_scaled, percentile_to_cutoff * 100)  # Calculate the threshold value for the given percentile
+
+    for i in range(len(color_scaled)):
+        if color_scaled[i] < percentile_value:
+            electrons[i] = np.array([np.nan, np.nan, np.nan])  # Set to NaN for points below threshold
+
+    electronsPV = pv.PolyData(electrons)
+    plotter.add_mesh(electronsPV, scalars=color_scaled, point_size=5, render_points_as_spheres=True, opacity=opacity, cmap='magma')
+    nucleous = pv.Sphere(radius=1/2, center = (0,0,0))
     plotter.add_mesh(nucleous, color='blue', opacity=0.9)
 
     #Add density coloring

@@ -1,9 +1,9 @@
 import numpy as np
 from scipy.special import genlaguerre, sph_harm_y, factorial
+from scipy.integrate import quad
 import visualizer
 
 gridLen = visualizer.gridLen
-rangeLim = visualizer.rangeLim
 percent_of_points = visualizer.percent_of_points
 
 class Orbital:
@@ -12,6 +12,7 @@ class Orbital:
         self.l = l
         self.m = m
         self.Z = Z
+        self.rangeLim = self.find_cutoff_radius(percentage=percent_of_points)  # Set rangeLim based on the cutoff radius
 
     def radial_component(self, r):
             n, l, Z = self.n, self.l, self.Z
@@ -28,33 +29,36 @@ class Orbital:
             return prefactor * np.exp(-rho/2) * rho**l * Lag(rho)  
     
     def angular_component(self, theta,phi):
-        return sph_harm_y(self.m, self.l, theta, phi)
+        return sph_harm_y(self.l, self.m, theta, phi)
 
     def wave_function(self, atom, r, theta, phi):
         """Calculate the wave function at all points; atom is unused."""
         # Calculate wave function for this orbital
         R = self.radial_component(r)
         Y = self.angular_component(theta, phi)
+        print("Number of NaN values in R:", np.isnan(R).sum())  # Debugging line to check for NaN values
+        print("Number of NaN values in Y:", np.isnan(Y).sum())  # Debugging line to check for NaN values
+        print("R sum:", np.sum(R))  # Debugging line to check the sum of R values
+        print("Y sum:", np.sum(Y))  # Debugging line to check the sum of Y values
         return R * Y    
     
     def probability_density(self, atom, r, theta, phi):
         psi = self.wave_function(atom, r, theta, phi) #REAL PHYSICS
 
-        pdf = np.abs(psi)**2 #TODO is this correct? Should we multiply by r^2 sin(theta) for the volume element in spherical coordinates?
+        pdf = np.abs(psi)**2
+        pdf[r > self.rangeLim] = 0  # Set probability density to zero outside the cutoff radius
+        print("Number of NaN values in pdf:", np.isnan(pdf).sum())  # Debugging line to check for NaN values
+        print("pdf sum:", np.sum(pdf))  # Debugging line to check the sum of pdf values
         return pdf    
     
 
     "-------------------------------------------------BREAD N BUTTER---------------------------------------------------------------"
     def generate_electron_cloud(self, num_points=100):
         #MAKE GRID N ASSIGN EACH POINT R,THETA,PHI VALUES
-        xv, yv, zv = np.linspace(-rangeLim, rangeLim, gridLen), np.linspace(-rangeLim, rangeLim, gridLen), np.linspace(-rangeLim, rangeLim, gridLen)
+        xv, yv, zv = np.linspace(-self.rangeLim, self.rangeLim, gridLen), np.linspace(-self.rangeLim, self.rangeLim, gridLen), np.linspace(-self.rangeLim, self.rangeLim, gridLen)
         x, y, z = np.meshgrid(xv, yv, zv, indexing='ij')
 
         r = np.sqrt(x**2 + y**2 + z**2)
-
-        #TODO scale r
-        scale_factor = self.find_scale_factor(r)
-        r_scaled = r * scale_factor
 
         #just prevents division by zero
         theta = np.zeros_like(r)
@@ -66,7 +70,7 @@ class Orbital:
         phi = np.arctan2(y, x)
 
         orbital_pdf = self.probability_density(self, r, theta, phi) 
-        orbital_pdf /= orbital_pdf.sum()  # Normalize the PDF
+        orbital_pdf /= np.sum(orbital_pdf)  # Normalize the PDF to ensure it sums to 1
 
         return self.sample_points_from_pdf(orbital_pdf, x, y, z, num_points)
     
@@ -84,20 +88,25 @@ class Orbital:
 
         return points
     
-    """Finds the scale factor such that r*scale results in the largest r being the r containing 90% of points"""
-    def find_scale_factor(self, r): #eventually change this so that it takes x%
-        #TODO make this correct
-        Z = self.Z
-        return 4*(self.n**2)/(Z*r.max())
 
-    def find_cutoff_radius(self, r, percentage=percent_of_points):
-        # Flatten the array and sort it
-        r_flat = r.ravel()
-        r_sorted = np.sort(r_flat)
+    def find_cutoff_radius(self, percentage=0.9):
+        """Finds the radius that contains a given percentage of the electron cloud, with units of bhor radius"""
+        #start at this radius, and increase till desired r
+        r_cutoff = 4*(self.n**2)/self.Z
 
-        # Find the index corresponding to the desired percentage
-        index = int(len(r_sorted) * percentage)
+        net_prob, _ = quad(self.radial_pdf, 0, r_cutoff)
 
-        # Return the cutoff radius
-        return r_sorted[index]
+        while(net_prob < percentage):
+            r_cutoff *= 2
+            net_prob, _ = quad(self.radial_pdf, 0, r_cutoff)
+
+        return r_cutoff
+
+    def radial_pdf(self, r):
+        """Calculate the radial probability density function for this orbital."""
+        R = self.radial_component(r)
+        pdf = (r**2) * np.abs(R)**2
+        return pdf
+
+    
     
