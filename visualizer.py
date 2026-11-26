@@ -5,9 +5,9 @@ import time
 
 WIDTH = 600
 HEIGHT = 600
-percent_of_points = 0.8
+percent_of_points = 0.95 #was 80%
 gridLen = 100
-percentile_to_cutoff = 0.05  # Threshold for density coloring
+percentile_to_cutoff = 0 # Threshold for density coloring was 0.05
 numPoints = 50000
 opacity = 0.7
 

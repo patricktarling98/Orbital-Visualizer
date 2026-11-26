@@ -36,10 +36,6 @@ class Orbital:
         # Calculate wave function for this orbital
         R = self.radial_component(r)
         Y = self.angular_component(theta, phi)
-        print("Number of NaN values in R:", np.isnan(R).sum())  # Debugging line to check for NaN values
-        print("Number of NaN values in Y:", np.isnan(Y).sum())  # Debugging line to check for NaN values
-        print("R sum:", np.sum(R))  # Debugging line to check the sum of R values
-        print("Y sum:", np.sum(Y))  # Debugging line to check the sum of Y values
         return R * Y    
     
     def probability_density(self, atom, r, theta, phi):
@@ -47,8 +43,6 @@ class Orbital:
 
         pdf = np.abs(psi)**2
         pdf[r > self.rangeLim] = 0  # Set probability density to zero outside the cutoff radius
-        print("Number of NaN values in pdf:", np.isnan(pdf).sum())  # Debugging line to check for NaN values
-        print("pdf sum:", np.sum(pdf))  # Debugging line to check the sum of pdf values
         return pdf    
     
 
